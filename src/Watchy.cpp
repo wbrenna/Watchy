@@ -26,7 +26,7 @@ void Watchy::init(String datetime){
     {
         case ESP_SLEEP_WAKEUP_EXT0: //RTC Alarm
             if(guiState == WATCHFACE_STATE){
-                //RTC.read(currentTime);
+                RTC.read(currentTime);
                 //showWatchFace(true); //partial updates on tick
 		showChickens(); //After RTC show a chicken
             }
@@ -126,6 +126,7 @@ void Watchy::handleButtonPress(){
         showWatchFace(false);
 	return;
     }else if(guiState == WATCHFACE_STATE){
+        RTC.read(currentTime);
 	showChickens();
         return;
     }
@@ -143,6 +144,7 @@ void Watchy::handleButtonPress(){
         showWatchFace(false);
 	return;
     }else if(guiState == WATCHFACE_STATE){
+        RTC.read(currentTime);
 	showChickens();
         return;
     }
