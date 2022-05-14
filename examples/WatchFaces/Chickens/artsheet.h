@@ -1,14 +1,16 @@
 //Art Sheet. I used http://javl.github.io/image2cpp/ to generate the arduino code for every image at 200x200 res.
-//Use the convenience array epd_bitmap_allArray[4] (alter size) in calling code.
-/*const unsigned char* epd_bitmap_allArray[4] = {
+//Use the convenience array epd_bitmap_allArray[4] in calling code.
+/*const unsigned char* epd_allArray[4] = {
 	epd_bitmap_Anacona_Screenshot_2022_05_14_10_59_31,
 	epd_bitmap_Andalusian_Screenshot_2022_05_14_11_00_20,
 	epd_bitmap_Barnevelder_Screenshot_2022_05_14_11_00_52,
 	epd_bitmap_Campine_Screenshot_2022_05_14_11_01_16
 };
-const int epd_bitmap_allArray_LEN = 4;
+const int epd_allArray_LEN = 4;
 */
 
+#ifndef WATCHY_ARTSHEET_H
+#define WATCHY_ARTSHEET_H
 
 
 // 'Andalusian_Screenshot_2022-05-14_11-00-20', 200x200px
@@ -1277,12 +1279,13 @@ const unsigned char epd_bitmap_Campine_Screenshot_2022_05_14_11_01_16 [] PROGMEM
 };
 
 // Array of all bitmaps for convenience. (Total bytes used to store images in PROGMEM = 20096)
-const int epd_bitmap_allArray_LEN = 4;
-const unsigned char* epd_bitmap_allArray[4] = {
+/*const int epd_allArray_LEN = 4;
+const unsigned char* epd_allArray[4] = {
 	epd_bitmap_Anacona_Screenshot_2022_05_14_10_59_31,
 	epd_bitmap_Andalusian_Screenshot_2022_05_14_11_00_20,
 	epd_bitmap_Barnevelder_Screenshot_2022_05_14_11_00_52,
 	epd_bitmap_Campine_Screenshot_2022_05_14_11_01_16
-};
+};*/
 
 
+#endif

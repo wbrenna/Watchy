@@ -26,8 +26,9 @@ void Watchy::init(String datetime){
     {
         case ESP_SLEEP_WAKEUP_EXT0: //RTC Alarm
             if(guiState == WATCHFACE_STATE){
-                RTC.read(currentTime);
-                showWatchFace(true); //partial updates on tick
+                //RTC.read(currentTime);
+                //showWatchFace(true); //partial updates on tick
+		showChickens(); //After RTC show a chicken
             }
             break;
         case ESP_SLEEP_WAKEUP_EXT1: //button Press
@@ -66,7 +67,7 @@ void Watchy::handleButtonPress(){
   uint64_t wakeupBit = esp_sleep_get_ext1_wakeup_status();
   //Menu Button
   if (wakeupBit & MENU_BTN_MASK){
-    if(guiState == WATCHFACE_STATE){//enter menu state if coming from watch face
+    if(guiState == WATCHFACE_STATE || guiState == CHICKEN_STATE){//enter menu state if coming from watch face
       showMenu(menuIndex, false);
     }else if(guiState == MAIN_MENU_STATE){//if already in menu, then select menu item
       switch(menuIndex)
@@ -108,7 +109,7 @@ void Watchy::handleButtonPress(){
         showMenu(menuIndex, false);//exit to menu if already in app
     }else if(guiState == FW_UPDATE_STATE){
         showMenu(menuIndex, false);//exit to menu if already in app
-    }else if(guiState == WATCHFACE_STATE){
+    }else if(guiState == WATCHFACE_STATE || guiState == CHICKEN_STATE){
         return;
     }
   }
@@ -120,7 +121,12 @@ void Watchy::handleButtonPress(){
         menuIndex = MENU_LENGTH - 1;
       }
       showMenu(menuIndex, true);
+    }else if(guiState == CHICKEN_STATE){
+        RTC.read(currentTime);
+        showWatchFace(false);
+	return;
     }else if(guiState == WATCHFACE_STATE){
+	showChickens();
         return;
     }
   }
@@ -132,7 +138,12 @@ void Watchy::handleButtonPress(){
         menuIndex = 0;
       }
       showMenu(menuIndex, true);
+    }else if(guiState == CHICKEN_STATE){
+        RTC.read(currentTime);
+        showWatchFace(false);
+	return;
     }else if(guiState == WATCHFACE_STATE){
+	showChickens();
         return;
     }
   }
@@ -552,6 +563,13 @@ void Watchy::showWatchFace(bool partialRefresh){
   guiState = WATCHFACE_STATE;
 }
 
+void Watchy::showChickens(){
+  display.setFullWindow();
+  drawWatchFaceChicken();
+  display.display(false);  //full refresh
+  guiState = CHICKEN_STATE;
+}
+
 void Watchy::drawWatchFace(){
     display.setFont(&DSEG7_Classic_Bold_53);
     display.setCursor(5, 53+60);
@@ -566,6 +584,9 @@ void Watchy::drawWatchFace(){
     display.println(currentTime.Minute);
 }
 
+void Watchy::drawWatchFaceChicken(){
+}
+
 weatherData Watchy::getWeatherData(){
     return getWeatherData(settings.cityID, settings.weatherUnit, settings.weatherLang, settings.weatherURL, settings.weatherAPIKey, settings.weatherUpdateInterval);
 }
@@ -575,19 +596,22 @@ weatherData Watchy::getWeatherData(String cityID, String units, String lang, Str
     if(weatherIntervalCounter < 0){ //-1 on first run, set to updateInterval
         weatherIntervalCounter = updateInterval;
     }
-    if(weatherIntervalCounter >= updateInterval){ //only update if WEATHER_UPDATE_INTERVAL has elapsed i.e. 30 minutes
+    if(weatherIntervalCounter >= updateInterval){ //only update if WEATHER_UPDATE_INTERVAL has elapsed e.g. 30 minutes
         if(connectWiFi()){
+	    syncNTP(); //sync the NTP when we're already collecting weather
             HTTPClient http; //Use Weather API for live data if WiFi is connected
             http.setConnectTimeout(3000);//3 second max timeout
-            String weatherQueryURL = url + cityID + String("&units=") + units + String("&lang=") + lang + String("&appid=") + apiKey;
+            //String weatherQueryURL = url + cityID + String("&units=") + units + String("&lang=") + lang + String("&appid=") + apiKey;
+	    // Onecall fails with city ID, needs lat/lon
+	    String weatherQueryURL = String("http://api.openweathermap.org/data/2.5/onecall?lon=-106.6345&lat=52.1168&units=metric&lang=en&appid=f058fe1cad2afe8e2ddc5d063a64cecb");
             http.begin(weatherQueryURL.c_str());
             int httpResponseCode = http.GET();
             if(httpResponseCode == 200) {
                 String payload = http.getString();
                 JSONVar responseObject = JSON.parse(payload);
-                currentWeather.temperature = int(responseObject["main"]["temp_max"]);  //Changes to display only the daily high
-                currentWeather.weatherConditionCode = int(responseObject["weather"][0]["id"]);
-                currentWeather.weatherDescription = responseObject["weather"][0]["main"];
+                currentWeather.temperature = int(responseObject["daily"][0]["temp"]["max"]);  //Changes to display only the daily high
+                currentWeather.weatherConditionCode = int(responseObject["daily"][0]["weather"][0]["id"]);
+                currentWeather.weatherDescription = responseObject["daily"][0]["weather"][0]["main"];
             }else{
                 //http error
             }

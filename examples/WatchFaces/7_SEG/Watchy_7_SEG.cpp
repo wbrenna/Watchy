@@ -19,17 +19,26 @@ void Watchy7SEG::drawWatchFace(){
     drawBattery();
     //Hide wifi logo when WIFI is active (currently a low res image, looks bad)
     //display.drawBitmap(120, 77, WIFI_CONFIGURED ? wifi : wifioff, 26, 18, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
-    WIFI_CONFIGURED ? continue : display.drawBitmap(120, 77, wifioff, 26, 18, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    if(!WIFI_CONFIGURED)
+	display.drawBitmap(120, 77, wifioff, 26, 18, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
     if(BLE_CONFIGURED){
         display.drawBitmap(100, 75, bluetooth, 13, 21, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
     }
 }
 
 void Watchy7SEG::drawWatchFaceChicken(){
+    const int epd_allArray_LEN = 4;
+    const unsigned char* epd_allArray[epd_allArray_LEN] = {
+        epd_bitmap_Anacona_Screenshot_2022_05_14_10_59_31,
+        epd_bitmap_Andalusian_Screenshot_2022_05_14_11_00_20,
+        epd_bitmap_Barnevelder_Screenshot_2022_05_14_11_00_52,
+        epd_bitmap_Campine_Screenshot_2022_05_14_11_01_16
+    };
+
     display.fillScreen(GxEPD_BLACK);
     srand(currentTime.Minute * currentTime.Hour * currentTime.Wday); //seeds rand() with the current minute causing watchy to display a new random image
     //change the % after rand() to the size of *art_sheet []
-    display.drawBitmap(0, 0, epd_bitmap_allArray[(rand() % epd_bitmap_allArray_LEN)], DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_WHITE); //draws a random image from art_sheet.h full size
+    display.drawBitmap(0, 0, epd_allArray[(rand() % epd_allArray_LEN)], DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_WHITE); //draws a random image from art_sheet.h full size
 
 }
 
@@ -48,7 +57,7 @@ void Watchy7SEG::drawTime(){
     display.print(displayHour);
     display.print(":");
     // Print minute to the nearest five
-    int currentMinute;
+    int currentMinute = currentTime.Minute;
     display.print(int(currentMinute/10));
     int nearestFiveMins = int((currentMinute % 10) / 5) ? 5 : 0;
     display.println(nearestFiveMins);

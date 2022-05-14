@@ -54,6 +54,7 @@
 #define MAIN_MENU_STATE 0
 #define APP_STATE 1
 #define FW_UPDATE_STATE 2
+#define CHICKEN_STATE 3
 #define MENU_HEIGHT 25
 #define MENU_LENGTH 7
 //set time

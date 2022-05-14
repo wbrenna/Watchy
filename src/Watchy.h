@@ -69,7 +69,9 @@ class Watchy {
         void updateFWBegin();
 
         void showWatchFace(bool partialRefresh);
+        void showChickens();
         virtual void drawWatchFace(); //override this method for different watch faces
+        virtual void drawWatchFaceChicken(); //override this method for different watch faces
 
     private:
         void _bmaConfig();
