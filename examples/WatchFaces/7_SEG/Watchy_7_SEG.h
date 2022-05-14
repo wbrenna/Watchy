@@ -7,11 +7,13 @@
 #include "DSEG7_Classic_Bold_25.h"
 #include "DSEG7_Classic_Regular_39.h"
 #include "icons.h"
+#include "artsheet.h"
 
 class Watchy7SEG : public Watchy{
     using Watchy::Watchy;
     public:
         void drawWatchFace();
+        void drawWatchFaceChicken();
         void drawTime();
         void drawDate();
         void drawSteps();

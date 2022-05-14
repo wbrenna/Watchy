@@ -1,3 +1,4 @@
+#include <stdlib.h> //srand, rand
 #include "Watchy_7_SEG.h"
 
 #define DARKMODE true
@@ -16,10 +17,20 @@ void Watchy7SEG::drawWatchFace(){
     drawSteps();
     drawWeather();
     drawBattery();
-    display.drawBitmap(120, 77, WIFI_CONFIGURED ? wifi : wifioff, 26, 18, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    //Hide wifi logo when WIFI is active (currently a low res image, looks bad)
+    //display.drawBitmap(120, 77, WIFI_CONFIGURED ? wifi : wifioff, 26, 18, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+    WIFI_CONFIGURED ? continue : display.drawBitmap(120, 77, wifioff, 26, 18, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
     if(BLE_CONFIGURED){
         display.drawBitmap(100, 75, bluetooth, 13, 21, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
     }
+}
+
+void Watchy7SEG::drawWatchFaceChicken(){
+    display.fillScreen(GxEPD_BLACK);
+    srand(currentTime.Minute * currentTime.Hour * currentTime.Wday); //seeds rand() with the current minute causing watchy to display a new random image
+    //change the % after rand() to the size of *art_sheet []
+    display.drawBitmap(0, 0, epd_bitmap_allArray[(rand() % epd_bitmap_allArray_LEN)], DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_WHITE); //draws a random image from art_sheet.h full size
+
 }
 
 void Watchy7SEG::drawTime(){
@@ -36,10 +47,11 @@ void Watchy7SEG::drawTime(){
     }
     display.print(displayHour);
     display.print(":");
-    if(currentTime.Minute < 10){
-        display.print("0");
-    }
-    display.println(currentTime.Minute);
+    // Print minute to the nearest five
+    int currentMinute;
+    display.print(int(currentMinute/10));
+    int nearestFiveMins = int((currentMinute % 10) / 5) ? 5 : 0;
+    display.println(nearestFiveMins);
 }
 
 void Watchy7SEG::drawDate(){
@@ -85,16 +97,16 @@ void Watchy7SEG::drawBattery(){
     display.fillRect(159, 78, 27, BATTERY_SEGMENT_HEIGHT, DARKMODE ? GxEPD_BLACK : GxEPD_WHITE);//clear battery segments
     int8_t batteryLevel = 0;
     float VBAT = getBatteryVoltage();
-    if(VBAT > 4.1){
+    if(VBAT > 4.0){ //Changed battery levels from defaults to better match linearity for my watchy
         batteryLevel = 3;
     }
-    else if(VBAT > 3.95 && VBAT <= 4.1){
+    else if(VBAT > 3.85 && VBAT <= 4.0){
         batteryLevel = 2;
     }
-    else if(VBAT > 3.80 && VBAT <= 3.95){
+    else if(VBAT > 3.70 && VBAT <= 3.85){
         batteryLevel = 1;
     }
-    else if(VBAT <= 3.80){
+    else if(VBAT <= 3.70){
         batteryLevel = 0;
     }
 
