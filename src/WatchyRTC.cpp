@@ -34,9 +34,17 @@ void WatchyRTC::clearAlarm(){
     }else{
         int nextAlarmMinute = 0;
         rtc_pcf.clearAlarm(); //resets the alarm flag in the RTC
-        nextAlarmMinute = rtc_pcf.getMinute();
-        nextAlarmMinute = (nextAlarmMinute == 59) ? 0 : (nextAlarmMinute + 1); //set alarm to trigger 1 minute from now
-        rtc_pcf.setAlarm(nextAlarmMinute, 99, 99, 99);
+        int currentHour = rtc_pcf.getHour();
+	nextAlarmMinute = rtc_pcf.getMinute();
+	if(currentHour > 8 && currentHour < 22)
+	{
+		nextAlarmMinute = (nextAlarmMinute == 59) ? 0 : (nextAlarmMinute + 1); //set alarm to trigger 1 minute from now
+	}
+	else
+	{
+		nextAlarmMinute = (nextAlarmMinute == 0) ? 59 : (nextAlarmMinute - 1); //set alarm to trigger 59 minutes from now
+	}
+	rtc_pcf.setAlarm(nextAlarmMinute, 99, 99, 99);
     }
 }
 

@@ -30,7 +30,7 @@ typedef struct watchySettings{
     String weatherURL;
     String weatherUnit;
     String weatherLang;
-    int8_t weatherUpdateInterval;
+    int weatherUpdateInterval;
     //NTP Settings
     String ntpServer;
     int gmtOffset;
@@ -65,7 +65,7 @@ class Watchy {
         void setupWifi();
         bool connectWiFi();
         weatherData getWeatherData();
-        weatherData getWeatherData(String cityID, String units, String lang, String url, String apiKey, uint8_t updateInterval);
+        weatherData getWeatherData(String cityID, String units, String lang, String url, String apiKey, int updateInterval);
         void updateFWBegin();
 
         void showWatchFace(bool partialRefresh);

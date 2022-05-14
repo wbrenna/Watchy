@@ -570,7 +570,7 @@ weatherData Watchy::getWeatherData(){
     return getWeatherData(settings.cityID, settings.weatherUnit, settings.weatherLang, settings.weatherURL, settings.weatherAPIKey, settings.weatherUpdateInterval);
 }
 
-weatherData Watchy::getWeatherData(String cityID, String units, String lang, String url, String apiKey, uint8_t updateInterval){
+weatherData Watchy::getWeatherData(String cityID, String units, String lang, String url, String apiKey, int updateInterval){
     currentWeather.isMetric = units == String("metric");
     if(weatherIntervalCounter < 0){ //-1 on first run, set to updateInterval
         weatherIntervalCounter = updateInterval;
@@ -585,7 +585,7 @@ weatherData Watchy::getWeatherData(String cityID, String units, String lang, Str
             if(httpResponseCode == 200) {
                 String payload = http.getString();
                 JSONVar responseObject = JSON.parse(payload);
-                currentWeather.temperature = int(responseObject["main"]["temp"]);
+                currentWeather.temperature = int(responseObject["main"]["temp_max"]);  //Changes to display only the daily high
                 currentWeather.weatherConditionCode = int(responseObject["weather"][0]["id"]);
                 currentWeather.weatherDescription = responseObject["weather"][0]["main"];
             }else{
