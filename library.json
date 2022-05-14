@@ -18,7 +18,9 @@
   "dependencies": [
     { "name": "Adafruit GFX Library" },
     { "name": "Arduino_JSON" },
-    { "name": "DS3232RTC" },
+    { "name": "DS3232RTC",
+      "version": "https://github.com/JChristensen/DS3232RTC.git#2.0.0"
+    },
     { "name": "NTPClient" },
     {
       "name": "Rtc_Pcf8563",
@@ -30,7 +32,7 @@
     },
     {
       "name": "WiFiManager",
-      "version": "https://github.com/tzapu/WiFiManager.git#2.0.3-alpha"
+      "version": "https://github.com/tzapu/WiFiManager.git#v2.0.10-beta"
     }
   ]
 }
