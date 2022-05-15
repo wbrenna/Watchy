@@ -21,6 +21,7 @@ typedef struct weatherData{
     int16_t weatherConditionCode;
     bool isMetric;
     String weatherDescription;
+    int8_t dayOfWeek;
 }weatherData;
 
 typedef struct watchySettings{

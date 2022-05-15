@@ -27,12 +27,24 @@ void Watchy7SEG::drawWatchFace(){
 }
 
 void Watchy7SEG::drawWatchFaceChicken(){
-    const int epd_allArray_LEN = 4;
+    const int epd_allArray_LEN = 16;
     const unsigned char* epd_allArray[epd_allArray_LEN] = {
         epd_bitmap_Anacona_Screenshot_2022_05_14_10_59_31,
         epd_bitmap_Andalusian_Screenshot_2022_05_14_11_00_20,
         epd_bitmap_Barnevelder_Screenshot_2022_05_14_11_00_52,
-        epd_bitmap_Campine_Screenshot_2022_05_14_11_01_16
+        epd_bitmap_Campine_Screenshot_2022_05_14_11_01_16,
+        epd_bitmap_Cornish_Screenshot_2022_05_14_22_39_23,
+        epd_bitmap_Ixworth_Screenshot_2022_05_14_22_39_52,
+        epd_bitmap_Silkie_Screenshot_2022_05_14_22_40_29,
+        epd_bitmap_AmericanGame_Screenshot_2022_05_14_22_49_18,
+        epd_bitmap_Cochin_Screenshot_2022_05_14_22_46_00,
+        epd_bitmap_Derbyshire_Screenshot_2022_05_14_22_48_46,
+        epd_bitmap_NewHampshire_Screenshot_2022_05_14_22_47_31,
+        epd_bitmap_RhodeIslandRed_Screenshot_2022_05_14_22_47_57,
+        epd_bitmap_Bresse_Screenshot_2022_05_14_22_37_59,
+        epd_bitmap_Sussex_Screenshot_2022_05_14_22_49_58,
+        epd_bitmap_Australorp_Screenshot_2022_05_14_22_56_21,
+        epd_bitmap_JerseyGiant_Screenshot_2022_05_14_22_55_37
     };
 
     display.fillScreen(GxEPD_BLACK);

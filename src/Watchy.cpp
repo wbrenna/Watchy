@@ -597,8 +597,10 @@ weatherData Watchy::getWeatherData(String cityID, String units, String lang, Str
     currentWeather.isMetric = units == String("metric");
     if(weatherIntervalCounter < 0){ //-1 on first run, set to updateInterval
         weatherIntervalCounter = updateInterval;
+	currentWeather.dayOfWeek = -1;
     }
-    if(weatherIntervalCounter >= updateInterval){ //only update if WEATHER_UPDATE_INTERVAL has elapsed e.g. 30 minutes
+    //if(weatherIntervalCounter >= updateInterval){ //only update if WEATHER_UPDATE_INTERVAL has elapsed e.g. 30 minutes
+    if( (currentWeather.dayOfWeek != currentTime.Wday) ){ //only update if it's a new day
         if(connectWiFi()){
 	    syncNTP(); //sync the NTP when we're already collecting weather
             HTTPClient http; //Use Weather API for live data if WiFi is connected
@@ -614,6 +616,7 @@ weatherData Watchy::getWeatherData(String cityID, String units, String lang, Str
                 currentWeather.temperature = int(responseObject["daily"][0]["temp"]["max"]);  //Changes to display only the daily high
                 currentWeather.weatherConditionCode = int(responseObject["daily"][0]["weather"][0]["id"]);
                 currentWeather.weatherDescription = responseObject["daily"][0]["weather"][0]["main"];
+		currentWeather.dayOfWeek = currentTime.Wday;
             }else{
                 //http error
             }
